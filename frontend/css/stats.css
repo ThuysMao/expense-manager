@@ -1,0 +1,405 @@
+/* =====================================================
+   EXPENSE MANAGER - Statistics Page Styles
+   ===================================================== */
+
+/* ==================== Stats Overview ==================== */
+.stats-overview {
+  padding: var(--space-4) var(--content-padding);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+}
+
+.stats-overview-full {
+  grid-template-columns: 1fr;
+}
+
+.stats-card {
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  text-align: center;
+  box-shadow: var(--shadow-xs);
+  border: 1px solid var(--color-gray-100);
+}
+
+.stats-card-label {
+  font-size: var(--font-size-sm);
+  color: var(--color-gray-500);
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--space-2);
+}
+
+.stats-card-value {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-extrabold);
+  line-height: var(--line-height-tight);
+}
+
+.stats-card-value.income {
+  color: var(--color-success);
+}
+
+.stats-card-value.expense {
+  color: var(--color-danger);
+}
+
+.stats-card-value.balance {
+  color: var(--color-primary);
+}
+
+.stats-card-change {
+  font-size: var(--font-size-xs);
+  margin-top: var(--space-1);
+  font-weight: var(--font-weight-medium);
+}
+
+/* ==================== Period Selector ==================== */
+.period-selector {
+  padding: var(--space-3) var(--content-padding);
+}
+
+/* ==================== Chart Container ==================== */
+.chart-section {
+  padding: 0 var(--content-padding);
+  margin-bottom: var(--space-6);
+}
+
+.chart-container {
+  background: var(--color-white);
+  border-radius: var(--radius-xl);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-card);
+}
+
+.chart-title {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-gray-800);
+  margin-bottom: var(--space-4);
+}
+
+/* ==================== Donut Chart ==================== */
+.donut-chart-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-5);
+}
+
+.donut-chart-canvas {
+  position: relative;
+  width: 200px;
+  height: 200px;
+}
+
+.donut-chart-canvas canvas {
+  width: 100%;
+  height: 100%;
+}
+
+.donut-chart-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.donut-chart-center-label {
+  font-size: var(--font-size-xs);
+  color: var(--color-gray-400);
+  font-weight: var(--font-weight-medium);
+}
+
+.donut-chart-center-value {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-extrabold);
+  color: var(--color-gray-800);
+  line-height: var(--line-height-tight);
+  margin-top: 2px;
+}
+
+/* ==================== Chart Legend ==================== */
+.chart-legend {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2h);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2h);
+  padding: var(--space-2);
+  border-radius: var(--radius-sm);
+  transition: background var(--transition-fast);
+}
+
+.legend-item:hover {
+  background: var(--color-gray-50);
+}
+
+.legend-color {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.legend-icon {
+  font-size: var(--font-size-md);
+  flex-shrink: 0;
+}
+
+.legend-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.legend-name {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-gray-700);
+}
+
+.legend-right {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.legend-amount {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-gray-800);
+}
+
+.legend-percent {
+  font-size: var(--font-size-xs);
+  color: var(--color-gray-400);
+  margin-top: 1px;
+}
+
+/* ==================== Bar Chart ==================== */
+.bar-chart-wrapper {
+  position: relative;
+}
+
+.bar-chart-canvas {
+  width: 100%;
+  height: 200px;
+}
+
+.bar-chart-canvas canvas {
+  width: 100%;
+  height: 100%;
+}
+
+.bar-chart-legend {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-5);
+  margin-top: var(--space-4);
+}
+
+.bar-legend-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-sm);
+  color: var(--color-gray-600);
+  font-weight: var(--font-weight-medium);
+}
+
+.bar-legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+}
+
+.bar-legend-dot.income {
+  background: var(--color-success);
+}
+
+.bar-legend-dot.expense {
+  background: var(--color-danger);
+}
+
+/* ==================== Top Categories ==================== */
+.top-categories {
+  padding: 0 var(--content-padding);
+  margin-bottom: var(--space-6);
+}
+
+.top-category-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+}
+
+.top-category-item:not(:last-child) {
+  border-bottom: 1px solid var(--color-gray-100);
+}
+
+.top-category-rank {
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-full);
+  background: var(--color-gray-100);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-gray-500);
+  flex-shrink: 0;
+}
+
+.top-category-rank:nth-child(1) {
+  background: #FEF3C7;
+  color: #B45309;
+}
+
+.top-category-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-md);
+  flex-shrink: 0;
+}
+
+.top-category-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.top-category-name {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-gray-700);
+}
+
+.top-category-bar {
+  height: 4px;
+  background: var(--color-gray-100);
+  border-radius: var(--radius-full);
+  margin-top: var(--space-1h);
+  overflow: hidden;
+}
+
+.top-category-bar-fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  transition: width 0.6s ease;
+}
+
+.top-category-amount {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.top-category-amount-value {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-gray-800);
+}
+
+.top-category-amount-percent {
+  font-size: var(--font-size-xs);
+  color: var(--color-gray-400);
+  margin-top: 1px;
+}
+
+/* ==================== Transactions Page ==================== */
+.transactions-header {
+  padding: var(--space-3) var(--content-padding);
+}
+
+.transactions-filters {
+  padding: 0 var(--content-padding);
+  margin-bottom: var(--space-3);
+}
+
+.filter-chips {
+  display: flex;
+  gap: var(--space-2);
+  overflow-x: auto;
+  padding: var(--space-1) 0;
+  -webkit-overflow-scrolling: touch;
+}
+
+.filter-chips::-webkit-scrollbar {
+  display: none;
+}
+
+.transactions-list {
+  padding: 0 var(--content-padding);
+}
+
+.transactions-date-group {
+  margin-bottom: var(--space-3);
+}
+
+.transactions-date-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-2) var(--space-1);
+  margin-bottom: var(--space-1);
+}
+
+.transactions-date-label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-gray-500);
+}
+
+.transactions-date-total {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+.transactions-list .card {
+  padding: var(--space-1) 0;
+  margin-bottom: var(--space-2);
+}
+
+/* ==================== Swipe to Delete ==================== */
+.swipe-container {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+}
+
+.swipe-actions {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  padding-right: var(--space-3);
+}
+
+.swipe-delete {
+  width: 60px;
+  height: 100%;
+  background: var(--color-danger);
+  color: var(--color-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+}
+
+.swipe-content {
+  position: relative;
+  z-index: 1;
+  background: var(--color-white);
+  transition: transform var(--transition-base);
+}

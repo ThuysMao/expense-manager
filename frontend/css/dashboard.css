@@ -1,0 +1,501 @@
+/* =====================================================
+   EXPENSE MANAGER - Dashboard Styles
+   ===================================================== */
+
+/* ==================== Wallet Card ==================== */
+.wallet-card-wrapper {
+  padding: var(--space-3) var(--content-padding) var(--space-5);
+  background: var(--color-white);
+}
+
+.wallet-card {
+  background: var(--gradient-wallet);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-5) var(--space-6);
+  color: var(--color-white);
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-wallet);
+  min-height: 155px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Decorative circles on the card */
+.wallet-card::before {
+  content: '';
+  position: absolute;
+  top: -30px;
+  right: -30px;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  pointer-events: none;
+}
+
+.wallet-card::after {
+  content: '';
+  position: absolute;
+  bottom: -40px;
+  left: -20px;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  pointer-events: none;
+}
+
+.wallet-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  z-index: 1;
+}
+
+.wallet-card-name {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  opacity: 0.95;
+}
+
+.wallet-card-name-icon {
+  width: 28px;
+  height: 28px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-sm);
+}
+
+.wallet-card-eye {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.7;
+  cursor: pointer;
+  transition: opacity var(--transition-fast);
+  border: none;
+  background: none;
+  color: white;
+  padding: 0;
+}
+
+.wallet-card-eye:hover {
+  opacity: 1;
+}
+
+.wallet-card-eye svg {
+  width: 18px;
+  height: 18px;
+}
+
+.wallet-card-amount {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-extrabold);
+  letter-spacing: -0.5px;
+  margin: var(--space-4) 0 var(--space-3);
+  position: relative;
+  z-index: 1;
+  line-height: var(--line-height-tight);
+}
+
+.wallet-card-bottom {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  position: relative;
+  z-index: 1;
+}
+
+.wallet-card-change {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-2h);
+  background: rgba(16, 185, 129, 0.2);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: #6EE7B7;
+}
+
+.wallet-card-change.negative {
+  background: rgba(239, 68, 68, 0.2);
+  color: #FCA5A5;
+}
+
+.wallet-card-change svg {
+  width: 12px;
+  height: 12px;
+}
+
+.wallet-card-change-label {
+  font-size: var(--font-size-sm);
+  opacity: 0.7;
+}
+
+/* Wallet dots indicator */
+.wallet-dots {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+.wallet-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-gray-300);
+  transition: all var(--transition-fast);
+  cursor: pointer;
+  border: none;
+  padding: 0;
+}
+
+.wallet-dot.active {
+  width: 20px;
+  border-radius: var(--radius-full);
+  background: var(--color-primary);
+}
+
+/* ==================== Quick Actions ==================== */
+.quick-actions {
+  padding: var(--space-2) var(--content-padding) var(--space-5);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-3);
+}
+
+.quick-action {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  cursor: pointer;
+  border: none;
+  background: none;
+  padding: var(--space-2);
+  transition: transform var(--transition-fast);
+}
+
+.quick-action:active {
+  transform: scale(0.93);
+}
+
+.quick-action-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.quick-action-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.quick-action-icon.expense {
+  background: linear-gradient(135deg, #FFF7ED, #FED7AA);
+  color: #F97316;
+}
+
+.quick-action-icon.income {
+  background: linear-gradient(135deg, #D1FAE5, #A7F3D0);
+  color: #10B981;
+}
+
+.quick-action-icon.goal {
+  background: linear-gradient(135deg, #EDE9FE, #DDD6FE);
+  color: #7C3AED;
+}
+
+@media (hover: hover) {
+  .quick-action:hover .quick-action-icon {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+  }
+}
+
+.quick-action-label {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-gray-600);
+  text-align: center;
+  line-height: var(--line-height-snug);
+  max-width: 72px;
+}
+
+/* ==================== Today Summary ==================== */
+.today-summary {
+  padding: 0 var(--content-padding);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+}
+
+.summary-card {
+  background: var(--color-white);
+  border-radius: var(--radius-xl);
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  box-shadow: var(--shadow-xs);
+  border: 1px solid var(--color-gray-100);
+  transition: transform var(--transition-base);
+}
+
+@media (hover: hover) {
+  .summary-card:hover {
+    transform: translateY(-1px);
+  }
+}
+
+.summary-card-top {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2h);
+}
+
+.summary-card-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.summary-card-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.summary-card-icon.expense-icon {
+  background: var(--color-danger-light);
+  color: var(--color-danger);
+}
+
+.summary-card-icon.income-icon {
+  background: var(--color-success-light);
+  color: var(--color-success);
+}
+
+.summary-card-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.summary-card-label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-gray-700);
+  line-height: 1;
+}
+
+.summary-card-period {
+  font-size: var(--font-size-2xs);
+  color: var(--color-gray-400);
+  margin-top: 3px;
+  font-weight: var(--font-weight-medium);
+}
+
+.summary-card-amount {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-extrabold);
+  line-height: var(--line-height-tight);
+  letter-spacing: -0.3px;
+}
+
+.summary-card-amount.expense-amount {
+  color: var(--color-danger);
+}
+
+.summary-card-amount.income-amount {
+  color: var(--color-success);
+}
+
+/* ==================== Goals Preview ==================== */
+.goals-preview {
+  padding: 0 var(--content-padding);
+  margin-bottom: var(--space-6);
+}
+
+.goals-preview .card {
+  padding: var(--space-4) 0;
+}
+
+.goal-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-5);
+  transition: background var(--transition-fast);
+}
+
+.goal-item:not(:last-child) {
+  border-bottom: 1px solid var(--color-gray-100);
+}
+
+.goal-item-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  background: var(--color-gray-100);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-xl);
+  flex-shrink: 0;
+}
+
+.goal-item-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.goal-item-name {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-gray-800);
+  line-height: var(--line-height-tight);
+}
+
+.goal-item-date {
+  font-size: var(--font-size-sm);
+  color: var(--color-gray-400);
+  margin-top: 2px;
+}
+
+.goal-item-progress {
+  margin-top: var(--space-2);
+}
+
+.goal-item-actions {
+  display: flex;
+  gap: var(--space-1);
+  flex-shrink: 0;
+}
+
+.goal-item-actions button {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-gray-400);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  border: none;
+  background: none;
+}
+
+.goal-item-actions button:hover {
+  background: var(--color-gray-100);
+  color: var(--color-gray-600);
+}
+
+.goal-item-actions .delete-btn:hover {
+  background: var(--color-danger-light);
+  color: var(--color-danger);
+}
+
+/* ==================== Recent Transactions ==================== */
+.recent-transactions {
+  padding: 0 var(--content-padding);
+  margin-bottom: var(--space-6);
+}
+
+.recent-transactions .card {
+  padding: var(--space-4) 0;
+}
+
+.transaction-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-5);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.transaction-item:active {
+  background: var(--color-gray-50);
+}
+
+.transaction-item:not(:last-child) {
+  border-bottom: 1px solid var(--color-gray-50);
+}
+
+.transaction-item-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-lg);
+  flex-shrink: 0;
+}
+
+.transaction-item-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.transaction-item-category {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-gray-800);
+  line-height: var(--line-height-tight);
+}
+
+.transaction-item-note {
+  font-size: var(--font-size-sm);
+  color: var(--color-gray-400);
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.transaction-item-right {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.transaction-item-amount {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+}
+
+.transaction-item-amount.expense {
+  color: var(--color-danger);
+}
+
+.transaction-item-amount.income {
+  color: var(--color-success);
+}
+
+.transaction-item-time {
+  font-size: var(--font-size-2xs);
+  color: var(--color-gray-400);
+  margin-top: 2px;
+}

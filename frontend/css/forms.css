@@ -1,0 +1,550 @@
+/* =====================================================
+   EXPENSE MANAGER - Form Styles
+   ===================================================== */
+
+/* ==================== Form General ==================== */
+.form-group {
+  margin-bottom: var(--space-5);
+}
+
+.form-label {
+  display: block;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-gray-700);
+  margin-bottom: var(--space-2);
+}
+
+.form-hint {
+  font-size: var(--font-size-xs);
+  color: var(--color-gray-400);
+  margin-top: var(--space-1);
+}
+
+/* ==================== Input ==================== */
+.form-input {
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  background: rgba(118, 118, 128, 0.08);
+  border: 1px solid transparent;
+  border-radius: 10px;
+  font-size: var(--font-size-base);
+  color: var(--color-gray-800);
+  transition: all var(--transition-fast);
+  -webkit-appearance: none;
+}
+
+.form-input:focus {
+  background: var(--color-white);
+  border-color: var(--color-primary-light);
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+}
+
+.form-input::placeholder {
+  color: var(--color-gray-400);
+}
+
+.form-input-error {
+  border-color: var(--color-danger) !important;
+}
+
+.form-input-error:focus {
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+}
+
+.form-error-text {
+  font-size: var(--font-size-xs);
+  color: var(--color-danger);
+  margin-top: var(--space-1);
+}
+
+/* ==================== Textarea ==================== */
+textarea.form-input {
+  min-height: 80px;
+  resize: vertical;
+  line-height: var(--line-height-relaxed);
+}
+
+/* ==================== Select ==================== */
+.form-select {
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  padding-right: var(--space-10);
+  background-color: rgba(118, 118, 128, 0.08);
+  border: 1px solid transparent;
+  border-radius: 10px;
+  font-size: var(--font-size-base);
+  color: var(--color-gray-800);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.form-select:focus {
+  background-color: var(--color-white);
+  border-color: var(--color-primary-light);
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+}
+
+/* ==================== Amount Input (Large) ==================== */
+.amount-input-wrapper {
+  padding: var(--space-6) var(--space-4);
+  text-align: center;
+}
+
+.amount-input-label {
+  font-size: var(--font-size-sm);
+  color: var(--color-gray-500);
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--space-2);
+}
+
+.amount-input {
+  font-size: var(--font-size-4xl);
+  font-weight: var(--font-weight-extrabold);
+  text-align: center;
+  width: 100%;
+  border: none;
+  background: none;
+  color: var(--color-gray-900);
+  outline: none;
+  letter-spacing: -1px;
+  padding: var(--space-2) 0;
+  caret-color: var(--color-primary);
+}
+
+.amount-input::placeholder {
+  color: var(--color-gray-300);
+}
+
+.amount-input.expense-color {
+  color: var(--color-danger);
+}
+
+.amount-input.income-color {
+  color: var(--color-success);
+}
+
+.amount-input-currency {
+  font-size: var(--font-size-xl);
+  color: var(--color-gray-400);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* ==================== Category Selector ==================== */
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-3);
+}
+
+.category-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1h);
+  padding: var(--space-3) var(--space-1);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  border: 2px solid transparent;
+  background: none;
+}
+
+.category-item:active {
+  transform: scale(0.95);
+}
+
+.category-item.selected {
+  background: var(--color-primary-lighter);
+  border-color: var(--color-primary);
+}
+
+.category-item-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-xl);
+  transition: transform var(--transition-fast);
+}
+
+.category-item.selected .category-item-icon {
+  transform: scale(1.1);
+}
+
+.category-item-name {
+  font-size: var(--font-size-2xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-gray-600);
+  text-align: center;
+  line-height: var(--line-height-tight);
+  max-width: 64px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.category-item.selected .category-item-name {
+  color: var(--color-primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* ==================== Type Selector (Tabs for expense/income) ==================== */
+.type-selector {
+  display: flex;
+  gap: 2px;
+  padding: 2px;
+  background: rgba(118, 118, 128, 0.12);
+  border-radius: 9px;
+  margin-bottom: var(--space-5);
+}
+
+.type-selector-btn {
+  flex: 1;
+  padding: 6px 12px;
+  border-radius: 7px;
+  font-size: 13px;
+  font-weight: var(--font-weight-semibold);
+  text-align: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  border: none;
+  background: none;
+  color: var(--color-gray-500);
+}
+
+.type-selector-btn.active {
+  background: var(--color-white);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12), 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.type-selector-btn.expense-type.active {
+  color: var(--color-danger);
+}
+
+.type-selector-btn.income-type.active {
+  color: var(--color-success);
+}
+
+/* ==================== Wallet Selector ==================== */
+.wallet-selector {
+  display: flex;
+  gap: var(--space-2);
+  overflow-x: auto;
+  padding: var(--space-1) 0;
+  -webkit-overflow-scrolling: touch;
+}
+
+.wallet-selector::-webkit-scrollbar {
+  display: none;
+}
+
+.wallet-selector-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2h) var(--space-3);
+  border-radius: var(--radius-md);
+  border: 1.5px solid var(--color-gray-200);
+  background: var(--color-white);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-gray-600);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.wallet-selector-item:active {
+  transform: scale(0.97);
+}
+
+.wallet-selector-item.selected {
+  border-color: var(--color-primary);
+  background: var(--color-primary-lighter);
+  color: var(--color-primary);
+}
+
+.wallet-selector-item-icon {
+  font-size: var(--font-size-md);
+}
+
+/* ==================== Date Input ==================== */
+.date-input-wrapper {
+  position: relative;
+}
+
+.date-input-wrapper svg {
+  position: absolute;
+  right: var(--space-3);
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  color: var(--color-gray-400);
+  pointer-events: none;
+}
+
+input[type="date"].form-input {
+  cursor: pointer;
+}
+
+input[type="date"].form-input::-webkit-calendar-picker-indicator {
+  opacity: 0;
+  position: absolute;
+  right: 0;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+}
+
+/* ==================== Add Transaction Form ==================== */
+.add-form {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.add-form-scroll {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.add-form-actions {
+  padding: var(--space-4) var(--space-5);
+  border-top: 1px solid var(--color-gray-100);
+  display: flex;
+  gap: var(--space-3);
+}
+
+.add-form-actions .btn {
+  flex: 1;
+}
+
+/* ==================== Wallet Form ==================== */
+.wallet-icon-selector {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.wallet-icon-option {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-xl);
+  border: 2px solid var(--color-gray-200);
+  background: var(--color-white);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.wallet-icon-option:active {
+  transform: scale(0.95);
+}
+
+.wallet-icon-option.selected {
+  border-color: var(--color-primary);
+  background: var(--color-primary-lighter);
+}
+
+.wallet-color-selector {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.wallet-color-option {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  border: 3px solid transparent;
+  position: relative;
+}
+
+.wallet-color-option:active {
+  transform: scale(0.93);
+}
+
+.wallet-color-option.selected {
+  border-color: var(--color-gray-300);
+  box-shadow: 0 0 0 2px var(--color-white), 0 0 0 4px var(--color-primary);
+}
+
+/* ==================== Goal Form ==================== */
+.goal-amount-display {
+  text-align: center;
+  padding: var(--space-4);
+  background: var(--color-gray-50);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--space-4);
+}
+
+.goal-amount-current {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-extrabold);
+  color: var(--color-primary);
+}
+
+.goal-amount-target {
+  font-size: var(--font-size-sm);
+  color: var(--color-gray-500);
+  margin-top: var(--space-1);
+}
+
+/* ==================== Settings List ==================== */
+.settings-list {
+  padding: 0;
+}
+
+.settings-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+}
+
+.settings-item:active {
+  background: var(--color-gray-50);
+}
+
+.settings-item:not(:last-child) {
+  border-bottom: 1px solid var(--color-gray-100);
+}
+
+.settings-item-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-lg);
+  flex-shrink: 0;
+}
+
+.settings-item-content {
+  flex: 1;
+}
+
+.settings-item-label {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-gray-800);
+}
+
+.settings-item-desc {
+  font-size: var(--font-size-sm);
+  color: var(--color-gray-400);
+  margin-top: 2px;
+}
+
+.settings-item-arrow {
+  color: var(--color-gray-300);
+  flex-shrink: 0;
+}
+
+.settings-item-arrow svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* ==================== Full Page Goals ==================== */
+.goals-full-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: 0 var(--content-padding);
+}
+
+.goal-card {
+  background: var(--color-white);
+  border-radius: var(--radius-xl);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-card);
+}
+
+.goal-card-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.goal-card-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-lg);
+  background: var(--color-primary-lighter);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-2xl);
+  flex-shrink: 0;
+}
+
+.goal-card-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.goal-card-name {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-gray-800);
+}
+
+.goal-card-date {
+  font-size: var(--font-size-sm);
+  color: var(--color-gray-400);
+  margin-top: 2px;
+}
+
+.goal-card-amounts {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-top: var(--space-3);
+  margin-bottom: var(--space-2);
+}
+
+.goal-card-current {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+}
+
+.goal-card-target {
+  font-size: var(--font-size-sm);
+  color: var(--color-gray-400);
+}
+
+.goal-card-actions {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+}
+
+.goal-card-actions .btn {
+  flex: 1;
+}

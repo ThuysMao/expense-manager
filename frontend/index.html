@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="description" content="Ứng dụng quản lý chi tiêu cá nhân thông minh - Theo dõi thu chi, quản lý ví, thiết lập mục tiêu tài chính">
+  <meta name="theme-color" content="#7C3AED">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <title>Quản lý Chi tiêu</title>
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/index.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/forms.css">
+  <link rel="stylesheet" href="css/stats.css">
+  <link rel="stylesheet" href="css/animations.css">
+</head>
+<body>
+  <div class="app" id="app">
+
+    <!-- ==================== App Content ==================== -->
+    <div class="app-content" id="appContent">
+
+      <!-- ========== Screen: Dashboard ========== -->
+      <div class="screen active" id="screenDashboard">
+        <!-- Rendered by dashboard.js -->
+      </div>
+
+      <!-- ========== Screen: Transactions ========== -->
+      <div class="screen" id="screenTransactions">
+        <!-- Rendered by transactions.js -->
+      </div>
+
+      <!-- ========== Screen: Statistics ========== -->
+      <div class="screen" id="screenStats">
+        <!-- Rendered by stats.js -->
+      </div>
+
+      <!-- ========== Screen: Settings ========== -->
+      <div class="screen" id="screenSettings">
+        <!-- Rendered by wallets.js -->
+      </div>
+
+      <!-- ========== Screen: Goals ========== -->
+      <div class="screen" id="screenGoals">
+        <!-- Rendered by goals.js -->
+      </div>
+
+    </div>
+
+    <!-- ==================== Bottom Navigation ==================== -->
+    <nav class="bottom-nav" id="bottomNav">
+      <button class="nav-item active" data-screen="dashboard" id="navDashboard">
+        <div class="nav-item-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+            <polyline points="9 22 9 12 15 12 15 22"/>
+          </svg>
+        </div>
+        <span class="nav-item-label">Trang chủ</span>
+      </button>
+
+      <button class="nav-item" data-screen="transactions" id="navTransactions">
+        <div class="nav-item-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="8" y1="6" x2="21" y2="6"/>
+            <line x1="8" y1="12" x2="21" y2="12"/>
+            <line x1="8" y1="18" x2="21" y2="18"/>
+            <line x1="3" y1="6" x2="3.01" y2="6"/>
+            <line x1="3" y1="12" x2="3.01" y2="12"/>
+            <line x1="3" y1="18" x2="3.01" y2="18"/>
+          </svg>
+        </div>
+        <span class="nav-item-label">Giao dịch</span>
+      </button>
+
+      <button class="nav-item nav-item-add" data-screen="add" id="navAdd">
+        <div class="nav-item-add-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"/>
+            <line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+        </div>
+      </button>
+
+      <button class="nav-item" data-screen="stats" id="navStats">
+        <div class="nav-item-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="20" x2="18" y2="10"/>
+            <line x1="12" y1="20" x2="12" y2="4"/>
+            <line x1="6" y1="20" x2="6" y2="14"/>
+          </svg>
+        </div>
+        <span class="nav-item-label">Thống kê</span>
+      </button>
+
+      <button class="nav-item" data-screen="settings" id="navSettings">
+        <div class="nav-item-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+        </div>
+        <span class="nav-item-label">Cài đặt</span>
+      </button>
+    </nav>
+
+    <!-- ==================== Modal Overlay ==================== -->
+    <div class="modal-overlay" id="modalOverlay">
+      <div class="modal-container" id="modalContainer">
+        <!-- Modal content rendered dynamically -->
+      </div>
+    </div>
+
+    <!-- ==================== Confirm Dialog ==================== -->
+    <div class="confirm-dialog-overlay" id="confirmDialog">
+      <div class="confirm-dialog">
+        <div class="confirm-dialog-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--color-warning)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+        </div>
+        <h3 class="confirm-dialog-title" id="confirmTitle">Xác nhận</h3>
+        <p class="confirm-dialog-text" id="confirmText">Bạn có chắc chắn muốn thực hiện?</p>
+        <div class="confirm-dialog-actions">
+          <button class="btn btn-secondary" id="confirmNo">Hủy</button>
+          <button class="btn btn-danger" id="confirmYes">Xác nhận</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ==================== Scripts (order matters) ==================== -->
+  <script src="js/utils.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/transactions.js"></script>
+  <script src="js/wallets.js"></script>
+  <script src="js/goals.js"></script>
+  <script src="js/stats.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(registration => {
+            console.log('ServiceWorker registration successful with scope: ', registration.scope);
+          }, err => {
+            console.log('ServiceWorker registration failed: ', err);
+          });
+      });
+    }
+  </script>
+</body>
+</html>
