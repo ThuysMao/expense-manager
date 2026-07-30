@@ -65,8 +65,8 @@ const WalletsPage = {
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
               </div>
             </button>
-            <button class="settings-item" id="installAppBtn" style="display: ${App.deferredInstallPrompt ? 'flex' : 'none'};">
-              <div class="settings-item-icon" style="background: var(--color-primary-light); color: var(--color-primary);">📱</div>
+            <button class="settings-item" id="installAppBtn" style="display: flex;">
+              <div class="settings-item-icon" style="background: var(--color-primary-light); color: var(--color-primary);">💻</div>
               <div class="settings-item-content">
                 <div class="settings-item-label" style="color: var(--color-primary); font-weight: 600;">Cài đặt ứng dụng</div>
                 <div class="settings-item-desc">Tải về máy tính hoặc điện thoại</div>
@@ -144,7 +144,7 @@ const WalletsPage = {
           App.deferredInstallPrompt = null;
         }
       } else {
-        Utils.showToast('Vui lòng cài đặt ứng dụng từ menu trình duyệt của bạn (Add to Home Screen).', 'info');
+        Utils.showToast('Trên máy tính: Nhấn biểu tượng 🖥️ tải xuống ở góc phải thanh địa chỉ (URL).', 'info');
       }
     });
 
