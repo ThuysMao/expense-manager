@@ -17,6 +17,13 @@ CORS(app)
 def index():
     return app.send_static_file('index.html')
 
+# ==================== Categories API ====================
+
+@app.route('/api/categories', methods=['GET'])
+def api_get_categories():
+    cat_type = request.args.get('type')
+    return jsonify(db.get_categories(cat_type))
+
 
 # ==================== Wallets API ====================
 
