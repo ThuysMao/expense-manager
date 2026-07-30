@@ -44,6 +44,12 @@ const GoalsPage = {
     return goals.map(goal => {
       const progress = Utils.percentage(goal.currentAmount, goal.targetAmount);
       const remaining = goal.targetAmount - goal.currentAmount;
+      return `
+        <div class="goal-card" data-id="${goal.id}">
+          <div class="goal-card-header">
+            <div class="goal-card-icon">${goal.icon}</div>
+            <div class="goal-card-info">
+              <div class="goal-card-title">${goal.name}</div>
               <div class="goal-card-date">
                 Bắt đầu từ: ${Utils.formatDate(goal.startDate)}
               </div>

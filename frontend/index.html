@@ -20,6 +20,16 @@
   <link rel="stylesheet" href="css/animations.css">
 </head>
 <body>
+  <div id="debugError" style="position:fixed; top:0; left:0; width:100%; z-index:9999; padding: 10px; color: red; background: yellow;"></div>
+  <script>
+    window.onerror = function(msg, url, lineNo, columnNo, error) {
+      document.getElementById('debugError').innerHTML += '<br/>ERROR: ' + msg + ' @ ' + lineNo;
+      return false;
+    };
+    window.addEventListener('unhandledrejection', function(event) {
+      document.getElementById('debugError').innerHTML += '<br/>PROMISE ERROR: ' + (event.reason ? event.reason.message : 'Unknown');
+    });
+  </script>
   <div class="app" id="app">
 
     <!-- ==================== App Content ==================== -->
