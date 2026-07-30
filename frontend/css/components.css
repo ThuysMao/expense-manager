@@ -7,7 +7,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--space-4) var(--content-padding);
+  padding: calc(var(--space-4) + env(safe-area-inset-top, 16px)) var(--content-padding) var(--space-4);
   background: rgba(242, 242, 247, 0.85);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
