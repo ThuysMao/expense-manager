@@ -85,3 +85,9 @@ Trong file `fly.toml`, cơ sở dữ liệu đã được cấu hình lưu vào 
 - **Backend:** Python 3, Flask, Werkzeug, SQLite3.
 - **Frontend:** HTML5, CSS3, JavaScript (ES6+), Chart.js (để vẽ biểu đồ).
 - **Deployment:** Docker, Gunicorn, Fly.io Cloud Platform.
+
+---
+
+## ©️ Bản quyền
+
+© 2026 Bản quyền thuộc về **Thuysmao**. Mọi quyền được bảo lưu.
