@@ -2,6 +2,8 @@
 
 Dự án ứng dụng Quản lý Tài chính cá nhân đa nền tảng, thiết kế hiện đại và hỗ trợ đa người dùng (Multi-user). Ứng dụng được xây dựng với kiến trúc Client-Server, sử dụng **Flask (Python)** làm Backend và **Vanilla JS/HTML/CSS** làm Frontend. Dự án được cấu hình PWA để cài đặt như một ứng dụng độc lập trên điện thoại và đã sẵn sàng triển khai lên môi trường Đám mây (Fly.io).
 
+👉 **[TRẢI NGHIỆM NGAY TẠI ĐÂY](https://quanlytaichinh.fly.dev/)** 👈
+
 ---
 
 ## 🌟 Tính năng Nổi bật
