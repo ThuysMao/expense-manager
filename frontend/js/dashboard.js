@@ -123,7 +123,23 @@ const Dashboard = {
               <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>
             </svg>
           </div>
-          <span class="quick-action-label">Thiết lập Mục tiêu</span>
+          <span class="quick-action-label">Mục tiêu</span>
+        </button>
+        <button class="quick-action" data-action="deposit-savings">
+          <div class="quick-action-icon" style="background: linear-gradient(135deg, #E0E7FF, #C7D2FE); color: #4338CA;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22v-20M7 7l5-5 5 5H7z"/>
+            </svg>
+          </div>
+          <span class="quick-action-label">Nạp Tiết kiệm</span>
+        </button>
+        <button class="quick-action" data-action="withdraw-goal">
+          <div class="quick-action-icon withdraw">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+            </svg>
+          </div>
+          <span class="quick-action-label">Rút Tiết kiệm</span>
         </button>
       </div>
     `;
@@ -171,7 +187,14 @@ const Dashboard = {
     if (!topGoals.length) return '';
 
     const goalItems = topGoals.map(goal => {
-      const progress = Utils.percentage(goal.currentAmount, goal.targetAmount);
+      const totalCurrent = goal.currentAmount + (goal.walletBalance || 0);
+      const progress = Utils.percentage(totalCurrent, goal.targetAmount);
+      
+      const walletProgress = Utils.percentage(goal.walletBalance || 0, goal.targetAmount);
+      const savingsProgress = Utils.percentage(goal.currentAmount, goal.targetAmount);
+      const clampedWallet = Math.min(walletProgress, 100);
+      const clampedSavings = Math.min(savingsProgress, 100 - clampedWallet);
+
       return `
         <div class="goal-item" data-id="${goal.id}">
           <div class="goal-item-icon">${goal.icon}</div>
@@ -179,14 +202,16 @@ const Dashboard = {
             <div class="goal-item-name">${goal.name}</div>
             <div class="goal-item-date">Bắt đầu từ: ${Utils.formatDate(goal.startDate)}</div>
             <div class="goal-item-progress">
-              <div class="progress-bar progress-bar-sm">
-                <div class="progress-bar-fill" style="width: ${Math.min(progress, 100)}%"></div>
+              <div class="progress-bar progress-bar-sm" style="display: flex; overflow: hidden; border-radius: 99px; background-color: var(--bg-tertiary);">
+                <div class="progress-bar-fill" style="width: ${clampedWallet}%; background-color: #7C3AED; border-radius: 0;"></div>
+                <div class="progress-bar-fill" style="width: ${clampedSavings}%; background-color: #10B981; border-radius: 0;"></div>
               </div>
               <div class="progress-label">
-                <span class="text-muted text-sm">${Utils.formatCurrencyShort(goal.currentAmount)}</span>
+                <span class="text-muted text-sm">${Utils.formatCurrencyShort(totalCurrent)}</span>
                 <span class="text-muted text-sm">${progress}%</span>
               </div>
             </div>
+            ${goal.withdrawnAmount > 0 ? `<div style="color: var(--color-danger); font-size: 0.75rem; margin-top: 2px;">Đã rút: ${Utils.formatCurrencyShort(goal.withdrawnAmount)}</div>` : ''}
           </div>
           <div class="goal-item-actions">
             <button class="edit-goal-btn" data-id="${goal.id}" aria-label="Chỉnh sửa">
@@ -292,6 +317,38 @@ const Dashboard = {
       });
     });
 
+    // Swipe to change wallet
+    const walletWrapper = Utils.$('.wallet-card-wrapper', container);
+    if (walletWrapper) {
+      let touchStartX = 0;
+      let touchEndX = 0;
+      
+      walletWrapper.addEventListener('touchstart', e => {
+        touchStartX = e.changedTouches[0].screenX;
+      }, {passive: true});
+
+      walletWrapper.addEventListener('touchend', async e => {
+        touchEndX = e.changedTouches[0].screenX;
+        const diff = touchStartX - touchEndX;
+        
+        // Threshold for swipe: 50px
+        if (Math.abs(diff) > 50) {
+          const wallets = await Store.getWallets();
+          if (wallets.length <= 1) return;
+          
+          if (diff > 0) {
+            // Swiped left -> next wallet
+            this.currentWalletIndex = (this.currentWalletIndex + 1) % wallets.length;
+          } else {
+            // Swiped right -> prev wallet
+            this.currentWalletIndex = (this.currentWalletIndex - 1 + wallets.length) % wallets.length;
+          }
+          await Store.setActiveWalletId(wallets[this.currentWalletIndex].id);
+          this.render();
+        }
+      }, {passive: true});
+    }
+
     // Quick actions
     const quickActions = Utils.$$('.quick-action', container);
     quickActions.forEach(btn => {
@@ -306,6 +363,12 @@ const Dashboard = {
             break;
           case 'add-goal':
             GoalsPage.showAddForm();
+            break;
+          case 'deposit-savings':
+            GoalsPage.showQuickDepositForm();
+            break;
+          case 'withdraw-goal':
+            GoalsPage.showQuickWithdrawForm();
             break;
         }
       });

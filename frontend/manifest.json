@@ -1,7 +1,7 @@
 {
-  "name": "Expense Manager",
-  "short_name": "Expense",
-  "description": "Ứng dụng quản lý chi tiêu cá nhân thông minh",
+  "name": "Quản lý tài chính",
+  "short_name": "Quản lý tài chính",
+  "description": "Ứng dụng quản lý tài chính cá nhân thông minh",
   "start_url": "/index.html",
   "display": "standalone",
   "background_color": "#EEEEF2",

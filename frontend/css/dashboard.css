@@ -173,7 +173,7 @@
 .quick-actions {
   padding: var(--space-2) var(--content-padding) var(--space-5);
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: var(--space-3);
 }
 
@@ -221,6 +221,11 @@
 .quick-action-icon.goal {
   background: linear-gradient(135deg, #EDE9FE, #DDD6FE);
   color: #7C3AED;
+}
+
+.quick-action-icon.withdraw {
+  background: linear-gradient(135deg, #FEF3C7, #FDE68A);
+  color: #D97706;
 }
 
 @media (hover: hover) {

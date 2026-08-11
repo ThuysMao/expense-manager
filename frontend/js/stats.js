@@ -4,24 +4,46 @@
 
 const StatsPage = {
 
-  currentPeriod: 'month',
+  currentMonthStr: null,
   currentType: 'income',
+  currentWalletId: '',
 
   async render() {
     const container = Utils.$('#screenStats');
     if (!container) return;
 
-    const currentMonth = Utils.getMonthStr();
-    const monthSummary = await Store.getMonthSummary(currentMonth);
+    if (!this.currentMonthStr) {
+      this.currentMonthStr = Utils.getMonthStr();
+    }
+
+    const wallets = await Store.getWallets();
+    const monthSummary = await Store.getMonthSummary(this.currentMonthStr, this.currentWalletId);
     const balance = monthSummary.income - monthSummary.expense;
 
-    const breakdown = await Store.getCategoryBreakdown(this.currentType, currentMonth);
-    const trend = await Store.getMonthlyTrend(6);
+    const breakdown = await Store.getCategoryBreakdown(this.currentType, this.currentMonthStr, this.currentWalletId);
+    const trend = await Store.getMonthlyTrend(6, this.currentWalletId);
+
+    const walletOptions = wallets.map(w => `<option value="${w.id}" ${this.currentWalletId === w.id ? 'selected' : ''}>${w.name}</option>`).join('');
 
     container.innerHTML = `
-      <div class="page-header">
-        <h1 class="page-header-title">Thống kê</h1>
-        <span class="text-sm text-muted">${Utils.getMonthName(currentMonth)}</span>
+      <div class="page-header" style="flex-direction: column; align-items: stretch; gap: 16px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <h1 class="page-header-title">Thống kê</h1>
+          <select id="statsWalletSelect" class="form-input" style="width: auto; padding: 4px 12px; font-size: 0.85rem; height: 32px; min-width: 120px;">
+            <option value="">Tất cả ví</option>
+            ${walletOptions}
+          </select>
+        </div>
+        
+        <div class="month-selector" style="display: flex; align-items: center; justify-content: space-between; background: var(--bg-tertiary); padding: 4px; border-radius: var(--radius-md);">
+          <button class="btn btn-icon" id="prevMonthBtn" style="width: 32px; height: 32px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <span class="text-sm font-semibold" style="flex: 1; text-align: center;">${Utils.getMonthName(this.currentMonthStr)}</span>
+          <button class="btn btn-icon" id="nextMonthBtn" style="width: 32px; height: 32px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
       </div>
 
       <div class="stats-overview">
@@ -113,7 +135,12 @@ const StatsPage = {
   },
 
   renderTopCategories(breakdown) {
-    if (!breakdown.length) return '';
+    if (!breakdown.length) return `
+      <div class="chart-container">
+        <h3 class="chart-title">Top danh mục</h3>
+        <p class="text-center text-muted text-sm" style="padding: 20px 0;">Chưa có dữ liệu</p>
+      </div>
+    `;
 
     const items = breakdown.slice(0, 5).map((item, index) => {
       const bgColor = item.category.color + '15';
@@ -365,5 +392,35 @@ const StatsPage = {
         this.render();
       });
     });
+
+    // Month Navigation
+    const prevBtn = Utils.$('#prevMonthBtn', container);
+    if (prevBtn) {
+      prevBtn.addEventListener('click', () => {
+        const [y, m] = this.currentMonthStr.split('-');
+        let date = new Date(parseInt(y), parseInt(m) - 2, 1);
+        this.currentMonthStr = Utils.getMonthStr(date);
+        this.render();
+      });
+    }
+
+    const nextBtn = Utils.$('#nextMonthBtn', container);
+    if (nextBtn) {
+      nextBtn.addEventListener('click', () => {
+        const [y, m] = this.currentMonthStr.split('-');
+        let date = new Date(parseInt(y), parseInt(m), 1);
+        this.currentMonthStr = Utils.getMonthStr(date);
+        this.render();
+      });
+    }
+
+    // Wallet Select
+    const walletSelect = Utils.$('#statsWalletSelect', container);
+    if (walletSelect) {
+      walletSelect.addEventListener('change', (e) => {
+        this.currentWalletId = e.target.value;
+        this.render();
+      });
+    }
   }
 };

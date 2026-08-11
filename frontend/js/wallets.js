@@ -65,6 +65,16 @@ const WalletsPage = {
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
               </div>
             </button>
+            <button class="settings-item" id="toggleThemeBtn">
+              <div class="settings-item-icon" style="background: var(--color-gray-200); color: var(--color-gray-800);" id="themeIcon">${document.documentElement.classList.contains('dark-theme') ? '☀️' : '🌙'}</div>
+              <div class="settings-item-content">
+                <div class="settings-item-label">Giao diện sáng / tối</div>
+                <div class="settings-item-desc">Đổi chế độ hiển thị</div>
+              </div>
+              <div class="settings-item-arrow">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+              </div>
+            </button>
             <button class="settings-item" id="installAppBtn" style="display: ${App.deferredInstallPrompt ? 'flex' : 'none'};">
               <div class="settings-item-icon" style="background: var(--color-primary-light); color: var(--color-primary);">📱</div>
               <div class="settings-item-content">
@@ -105,6 +115,26 @@ const WalletsPage = {
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
               </div>
             </button>
+            <button class="settings-item" id="logoutBtn" style="color: var(--color-danger);">
+              <div class="settings-item-icon" style="background: var(--color-danger-light);">🚪</div>
+              <div class="settings-item-content">
+                <div class="settings-item-label">Đăng xuất</div>
+                <div class="settings-item-desc">Thoát khỏi tài khoản hiện tại</div>
+              </div>
+              <div class="settings-item-arrow">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+              </div>
+            </button>
+            <button class="settings-item" id="deleteAccountBtn" style="color: var(--color-danger);">
+              <div class="settings-item-icon" style="background: var(--color-danger-light);">⚠️</div>
+              <div class="settings-item-content">
+                <div class="settings-item-label" style="color: var(--color-danger);">Xóa tài khoản</div>
+                <div class="settings-item-desc">Xóa vĩnh viễn tài khoản và mọi dữ liệu</div>
+              </div>
+              <div class="settings-item-arrow">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+              </div>
+            </button>
           </div>
         </div>
       </div>
@@ -134,6 +164,55 @@ const WalletsPage = {
 
     // Manage categories
     Utils.$('#manageCategories', container)?.addEventListener('click', () => this.showCategories());
+
+    // Toggle Theme
+    Utils.$('#toggleThemeBtn', container)?.addEventListener('click', () => {
+      const isDark = document.documentElement.classList.toggle('dark-theme');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      
+      // Update icon if needed
+      const icon = Utils.$('#themeIcon', container);
+      if (icon) {
+        icon.textContent = isDark ? '☀️' : '🌙';
+      }
+    });
+
+    // Logout
+    Utils.$('#logoutBtn', container)?.addEventListener('click', async () => {
+      App.showConfirm(
+        'Đăng xuất',
+        'Bạn có chắc chắn muốn đăng xuất khỏi tài khoản?',
+        async () => {
+          try {
+            await fetch('/api/auth/logout', { method: 'POST' });
+            window.location.href = 'login.html';
+          } catch (error) {
+            console.error('Logout error:', error);
+          }
+        }
+      );
+    });
+
+    // Delete Account
+    Utils.$('#deleteAccountBtn', container)?.addEventListener('click', async () => {
+      App.showConfirm(
+        'CẢNH BÁO: Xóa tài khoản',
+        'Hành động này sẽ XÓA VĨNH VIỄN tài khoản của bạn cùng toàn bộ dữ liệu (ví, giao dịch, mục tiêu). Bạn có chắc chắn muốn tiếp tục?',
+        async () => {
+          try {
+            const res = await fetch('/api/auth/delete', { method: 'DELETE' });
+            if (res.ok) {
+              window.location.href = 'login.html';
+            } else {
+              Utils.showToast('Không thể xóa tài khoản', 'error');
+            }
+          } catch (error) {
+            console.error('Delete account error:', error);
+            Utils.showToast('Lỗi hệ thống', 'error');
+          }
+        }
+      );
+    });
 
     // Install App
     Utils.$('#installAppBtn', container)?.addEventListener('click', async () => {

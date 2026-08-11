@@ -2,13 +2,92 @@
 EXPENSE MANAGER - Flask API Server
 """
 
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify, send_from_directory, session, g
+from werkzeug.security import generate_password_hash, check_password_hash
 from flask_cors import CORS
 import os
 import database as db
+import uuid
+
 FRONTEND_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../frontend')
 app = Flask(__name__, static_folder=FRONTEND_FOLDER, static_url_path='')
-CORS(app)
+app.secret_key = 'super_secret_key_for_expense_manager_123'
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+CORS(app, supports_credentials=True)
+
+@app.before_request
+def require_login():
+    if request.method == 'OPTIONS':
+        return
+    if request.path.startswith('/api/auth/'):
+        return
+    if request.path.startswith('/api/'):
+        user_id = session.get('user_id')
+        if not user_id:
+            return jsonify({'error': 'Unauthorized'}), 401
+        g.user_id = user_id
+
+# ==================== Auth API ====================
+
+@app.route('/api/auth/me', methods=['GET'])
+def api_auth_me():
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({'error': 'Unauthorized'}), 401
+    user = db.get_user(user_id)
+    if not user:
+        return jsonify({'error': 'User not found'}), 404
+    return jsonify({'id': user['id'], 'name': user['name'], 'username': user['username']})
+
+@app.route('/api/auth/login', methods=['POST'])
+def api_auth_login():
+    data = request.get_json()
+    username = data.get('username')
+    password = data.get('password')
+    user = db.get_user_by_username(username)
+    if user and check_password_hash(user['password_hash'], password):
+        session['user_id'] = user['id']
+        return jsonify({'ok': True, 'user': {'id': user['id'], 'name': user['name']}})
+    return jsonify({'error': 'Sai tên đăng nhập hoặc mật khẩu'}), 401
+
+@app.route('/api/auth/register', methods=['POST'])
+def api_auth_register():
+    data = request.get_json()
+    name = data.get('name')
+    username = data.get('username')
+    password = data.get('password')
+    
+    if not name or not username or not password:
+        return jsonify({'error': 'Vui lòng nhập đầy đủ thông tin'}), 400
+        
+    if db.get_user_by_username(username):
+        return jsonify({'error': 'Tên đăng nhập đã tồn tại'}), 400
+        
+    user_id = db.generate_id()
+    password_hash = generate_password_hash(password)
+    db.create_user(user_id, name, username, password_hash)
+    
+    # Initialize basic data for new user
+    db.init_user_data(user_id)
+    
+    session['user_id'] = user_id
+    return jsonify({'ok': True, 'user': {'id': user_id, 'name': name}})
+
+@app.route('/api/auth/logout', methods=['POST'])
+def api_auth_logout():
+    session.pop('user_id', None)
+    return jsonify({'ok': True})
+
+@app.route('/api/auth/delete', methods=['DELETE'])
+def api_auth_delete():
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    db.delete_user(user_id)
+    session.pop('user_id', None)
+    return jsonify({'ok': True})
+
 
 
 # ==================== Static Files ====================
@@ -57,6 +136,30 @@ def api_set_active_wallet():
     data = request.get_json()
     db.set_active_wallet_id(data['id'])
     return jsonify({'ok': True})
+
+
+@app.route('/api/savings', methods=['GET'])
+def api_get_savings():
+    wallet = db.get_savings_wallet()
+    if not wallet:
+        return jsonify({'error': 'Savings wallet not found'}), 404
+    return jsonify(wallet)
+
+@app.route('/api/savings/deposit', methods=['POST'])
+def api_deposit_savings():
+    data = request.get_json()
+    wallet = db.deposit_savings(data.get('amount', 0))
+    if not wallet:
+        return jsonify({'error': 'Savings wallet not found'}), 404
+    return jsonify(wallet)
+
+@app.route('/api/savings/withdraw', methods=['POST'])
+def api_withdraw_savings():
+    data = request.get_json()
+    wallet = db.withdraw_savings(data.get('amount', 0))
+    if not wallet:
+        return jsonify({'error': 'Savings wallet not found'}), 404
+    return jsonify(wallet)
 
 
 # ==================== Categories API ====================
@@ -136,6 +239,13 @@ def api_get_goal(goal_id):
         return jsonify({'error': 'Goal not found'}), 404
     return jsonify(goal)
 
+@app.route('/api/debug/goals', methods=['GET'])
+def api_debug_goals():
+    conn = db.get_connection()
+    rows = conn.execute("SELECT * FROM goals").fetchall()
+    conn.close()
+    return jsonify([dict(r) for r in rows])
+
 
 @app.route('/api/goals', methods=['POST'])
 def api_add_goal():
@@ -187,14 +297,16 @@ def api_stats_month():
 @app.route('/api/stats/trend', methods=['GET'])
 def api_stats_trend():
     months = int(request.args.get('months', 6))
-    return jsonify(db.get_monthly_trend(months))
+    wallet_id = request.args.get('walletId')
+    return jsonify(db.get_monthly_trend(months, wallet_id))
 
 
 @app.route('/api/stats/breakdown', methods=['GET'])
 def api_stats_breakdown():
     cat_type = request.args.get('type', 'expense')
     month = request.args.get('month')
-    return jsonify(db.get_category_breakdown(cat_type, month))
+    wallet_id = request.args.get('walletId')
+    return jsonify(db.get_category_breakdown(cat_type, month, wallet_id))
 
 
 # ==================== Export / Import / Reset ====================
@@ -222,8 +334,10 @@ def api_reset():
 
 # ==================== Start Server ====================
 
+# Initialize database (creates tables and seed data if needed)
+db.init_db()
+
 if __name__ == '__main__':
-    db.init_db()
     print("="*50)
     print("  Expense Manager Server")
     print("  Database: expense_manager.db")

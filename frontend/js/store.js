@@ -18,6 +18,10 @@ const Store = {
     try {
       const response = await fetch(`/api${path}`, options);
       if (!response.ok) {
+        if (response.status === 401) {
+          window.location.href = 'login.html';
+          return;
+        }
         const err = await response.json().catch(() => ({}));
         throw new Error(err.error || `HTTP ${response.status}`);
       }
@@ -138,13 +142,16 @@ const Store = {
     return await this.api('GET', `/stats/month${params}`);
   },
 
-  async getMonthlyTrend(numMonths = 6) {
-    return await this.api('GET', `/stats/trend?months=${numMonths}`);
+  async getMonthlyTrend(numMonths = 6, walletId) {
+    let params = `?months=${numMonths}`;
+    if (walletId) params += `&walletId=${walletId}`;
+    return await this.api('GET', `/stats/trend${params}`);
   },
 
-  async getCategoryBreakdown(type = 'expense', monthStr) {
+  async getCategoryBreakdown(type = 'expense', monthStr, walletId) {
     let params = `?type=${type}`;
     if (monthStr) params += `&month=${monthStr}`;
+    if (walletId) params += `&walletId=${walletId}`;
     return await this.api('GET', `/stats/breakdown${params}`);
   },
 
@@ -179,6 +186,22 @@ const Store = {
   },
 
   // ==================== Export / Import / Reset ====================
+
+  async getSavingsWallet() {
+    try {
+      return await this.api('GET', `/savings`);
+    } catch {
+      return null;
+    }
+  },
+
+  async depositSavings(amount) {
+    return await this.api('POST', `/savings/deposit`, { amount });
+  },
+
+  async withdrawSavings(amount) {
+    return await this.api('POST', `/savings/withdraw`, { amount });
+  },
 
   async exportData() {
     const data = await this.api('GET', '/export');
