@@ -142,7 +142,7 @@ const WalletsPage = {
       <!-- App Info -->
       <div class="section" style="text-align: center; padding-bottom: var(--space-8);">
         <div class="text-sm text-muted" style="margin-bottom: 4px; font-weight: 600;">💰 Quản lý Chi tiêu v1.0</div>
-        <div class="text-xs text-muted" style="margin-bottom: 4px;">&copy; 2026 Bản quyền thuộc về <b>thuysmao</b></div>
+        <div class="text-xs text-muted" style="margin-bottom: 4px;">&copy; 2026 Bản quyền thuộc về <b>Thuysmao</b>. Mọi quyền được bảo lưu.</div>
         <div class="text-xs text-light">Backend: Python Flask + SQLite</div>
       </div>
     `;
