@@ -4,6 +4,8 @@ Dự án ứng dụng Quản lý Tài chính cá nhân đa nền tảng, thiết
 
 👉 **[TRẢI NGHIỆM NGAY TẠI ĐÂY](https://quanlytaichinh.fly.dev/)** 👈
 
+> **⚠️ LƯU Ý QUAN TRỌNG:** Ứng dụng này là một công cụ hỗ trợ ghi chép. Hệ thống **KHÔNG** kết nối với tài khoản ngân hàng thực tế hay lấy tiền của bạn. Toàn bộ số tiền (số dư ví, thu/chi) đều do **bạn tự nhập tay** để tự quản lý cá nhân.
+
 ---
 
 ## 🌟 Tính năng Nổi bật
