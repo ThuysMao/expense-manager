@@ -68,6 +68,12 @@ def delete_user(user_id):
     conn.commit()
     conn.close()
 
+def update_user_password(username, password_hash):
+    conn = get_connection()
+    conn.execute("UPDATE users SET password_hash = ? WHERE username = ?", (password_hash, username))
+    conn.commit()
+    conn.close()
+
 def init_user_data(user_id):
     conn = get_connection()
     try:

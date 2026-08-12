@@ -88,6 +88,37 @@ def api_auth_delete():
     session.pop('user_id', None)
     return jsonify({'ok': True})
 
+@app.route('/api/auth/reset-password', methods=['POST'])
+def api_auth_reset_password():
+    data = request.get_json()
+    username = data.get('username')
+    new_password = data.get('new_password')
+    
+    if not username or not new_password:
+        return jsonify({'error': 'Vui lòng nhập đầy đủ thông tin'}), 400
+        
+    user = db.get_user_by_username(username)
+    if not user:
+        return jsonify({'error': 'Tên đăng nhập không tồn tại'}), 404
+        
+    password_hash = generate_password_hash(new_password)
+    db.update_user_password(username, password_hash)
+    
+    return jsonify({'ok': True})
+
+@app.route('/api/auth/check-username', methods=['POST'])
+def api_auth_check_username():
+    data = request.get_json()
+    username = data.get('username')
+    
+    if not username:
+        return jsonify({'error': 'Vui lòng nhập tên đăng nhập'}), 400
+        
+    user = db.get_user_by_username(username)
+    if not user:
+        return jsonify({'error': 'Tên đăng nhập không tồn tại'}), 404
+        
+    return jsonify({'ok': True})
 
 
 # ==================== Static Files ====================

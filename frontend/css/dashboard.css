@@ -10,16 +10,28 @@
 
 .wallet-card {
   background: var(--gradient-wallet);
-  border-radius: var(--radius-2xl);
+  border-radius: 20px;
   padding: var(--space-5) var(--space-6);
   color: var(--color-white);
   position: relative;
   overflow: hidden;
   box-shadow: var(--shadow-wallet);
-  min-height: 155px;
+  min-height: 180px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.wallet-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml;utf8,<svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><path d="M0 0h40v40H0V0zm20 20h20v20H20V20z" fill="rgba(255,255,255,0.02)"/></svg>');
+  pointer-events: none;
 }
 
 /* Decorative circles on the card */
@@ -100,13 +112,14 @@
 }
 
 .wallet-card-amount {
-  font-size: var(--font-size-3xl);
+  font-size: var(--font-size-4xl);
   font-weight: var(--font-weight-extrabold);
-  letter-spacing: -0.5px;
-  margin: var(--space-4) 0 var(--space-3);
+  letter-spacing: -1px;
+  margin: var(--space-2) 0 var(--space-4);
   position: relative;
   z-index: 1;
   line-height: var(--line-height-tight);
+  text-shadow: 0 2px 10px rgba(0,0,0,0.2);
 }
 
 .wallet-card-bottom {
@@ -194,13 +207,22 @@
 }
 
 .quick-action-icon {
-  width: 52px;
-  height: 52px;
-  border-radius: var(--radius-lg);
+  width: 56px;
+  height: 56px;
+  border-radius: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: transform var(--transition-base), box-shadow var(--transition-base);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+  background: var(--color-white);
+  border: 1px solid var(--color-gray-100);
+}
+
+.dark-theme .quick-action-icon {
+  background: #1E293B;
+  border-color: #334155;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 .quick-action-icon svg {
@@ -209,23 +231,19 @@
 }
 
 .quick-action-icon.expense {
-  background: linear-gradient(135deg, #FFF7ED, #FED7AA);
-  color: #F97316;
+  color: var(--color-danger);
 }
 
 .quick-action-icon.income {
-  background: linear-gradient(135deg, #D1FAE5, #A7F3D0);
-  color: #10B981;
+  color: var(--color-success);
 }
 
 .quick-action-icon.goal {
-  background: linear-gradient(135deg, #EDE9FE, #DDD6FE);
-  color: #7C3AED;
+  color: var(--color-primary);
 }
 
 .quick-action-icon.withdraw {
-  background: linear-gradient(135deg, #FEF3C7, #FDE68A);
-  color: #D97706;
+  color: var(--color-warning);
 }
 
 @media (hover: hover) {
