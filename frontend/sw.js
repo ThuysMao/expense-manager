@@ -1,4 +1,4 @@
-const CACHE_NAME = 'expense-manager-v4';
+const CACHE_NAME = 'expense-manager-v5';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -16,8 +16,8 @@ const ASSETS_TO_CACHE = [
   '/js/goals.js',
   '/js/stats.js',
   '/js/app.js',
-  '/icons/icon-192.png',
-  '/icons/icon-512.png'
+  '/icons/icon-192.png?v=2',
+  '/icons/icon-512.png?v=2'
 ];
 
 self.addEventListener('install', (event) => {

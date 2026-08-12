@@ -1,10 +1,29 @@
 function toggleForm(formType) {
-    if (formType === 'register') {
-        document.getElementById('loginForm').style.display = 'none';
-        document.getElementById('registerForm').style.display = 'block';
-    } else {
-        document.getElementById('loginForm').style.display = 'block';
-        document.getElementById('registerForm').style.display = 'none';
+    document.getElementById('loginForm').style.display = 'none';
+    document.getElementById('registerForm').style.display = 'none';
+    document.getElementById('forgotForm').style.display = 'none';
+    
+    if (formType === 'forgot') {
+        const step1 = document.getElementById('forgotStep1');
+        const step2 = document.getElementById('forgotStep2');
+        if (step1) step1.style.display = 'block';
+        if (step2) step2.style.display = 'none';
+        
+        const subtitle = document.getElementById('forgotSubtitle');
+        if (subtitle) subtitle.textContent = 'Nhập tên đăng nhập để tiếp tục';
+        
+        const uname = document.getElementById('forgotUsername');
+        const pwd = document.getElementById('forgotNewPassword');
+        if (uname) uname.value = '';
+        if (pwd) pwd.value = '';
+        
+        const success = document.getElementById('forgotSuccess');
+        if (success) success.style.display = 'none';
+        hideError('forgot');
+    }
+    
+    if (document.getElementById(`${formType}Form`)) {
+        document.getElementById(`${formType}Form`).style.display = 'block';
     }
 }
 
@@ -82,13 +101,83 @@ async function register() {
     }
 }
 
+async function verifyForgotUsername() {
+    hideError('forgot');
+    const usernameInput = document.getElementById('forgotUsername');
+    if (!usernameInput.value) {
+        return showError('forgot', 'Vui lòng nhập tên đăng nhập');
+    }
+
+    try {
+        const response = await fetch('/api/auth/check-username', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username: usernameInput.value })
+        });
+
+        const data = await response.json();
+        
+        if (response.ok) {
+            document.getElementById('forgotStep1').style.display = 'none';
+            document.getElementById('forgotStep2').style.display = 'block';
+            document.getElementById('forgotSubtitle').textContent = 'Nhập mật khẩu mới cho tài khoản ' + usernameInput.value;
+        } else {
+            showError('forgot', data.error || 'Tên đăng nhập không tồn tại');
+        }
+    } catch (error) {
+        showError('forgot', 'Lỗi kết nối đến máy chủ');
+    }
+}
+
+async function resetPassword() {
+    hideError('forgot');
+    document.getElementById('forgotSuccess').style.display = 'none';
+    const usernameInput = document.getElementById('forgotUsername');
+    const newPasswordInput = document.getElementById('forgotNewPassword');
+    
+    if (!usernameInput.value || !newPasswordInput.value) {
+        return showError('forgot', 'Vui lòng nhập đầy đủ thông tin');
+    }
+
+    try {
+        const response = await fetch('/api/auth/reset-password', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                username: usernameInput.value,
+                new_password: newPasswordInput.value
+            })
+        });
+
+        const data = await response.json();
+        
+        if (response.ok) {
+            document.getElementById('forgotSuccess').textContent = 'Đặt lại mật khẩu thành công! Vui lòng đăng nhập.';
+            document.getElementById('forgotSuccess').style.display = 'block';
+            usernameInput.value = '';
+            newPasswordInput.value = '';
+            setTimeout(() => toggleForm('login'), 2000);
+        } else {
+            showError('forgot', data.error || 'Đặt lại mật khẩu thất bại');
+        }
+    } catch (error) {
+        showError('forgot', 'Lỗi kết nối đến máy chủ');
+    }
+}
+
 // Support Enter key
 document.addEventListener('keypress', function(e) {
     if (e.key === 'Enter') {
         if (document.getElementById('loginForm').style.display !== 'none') {
             login();
-        } else {
+        } else if (document.getElementById('registerForm').style.display !== 'none') {
             register();
+        } else if (document.getElementById('forgotForm').style.display !== 'none') {
+            if (document.getElementById('forgotStep1').style.display !== 'none') {
+                verifyForgotUsername();
+            } else {
+                resetPassword();
+            }
         }
     }
 });

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="description" content="Đăng nhập - Ứng dụng quản lý chi tiêu cá nhân thông minh">
-  <meta name="theme-color" content="#7C3AED">
+  <meta name="theme-color" content="#1D4ED8">
   <title>Đăng nhập - Quản lý tài chính</title>
 
   <!-- Stylesheets (Using Main App CSS) -->
@@ -113,6 +113,65 @@
       display: none;
       animation: shake 0.5s;
     }
+
+    .input-group {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    
+    .input-icon {
+      position: absolute;
+      left: var(--space-4);
+      color: var(--color-gray-400);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+    
+    .input-field {
+      width: 100%;
+      padding: var(--space-4);
+      padding-left: calc(var(--space-4) + 24px + var(--space-2));
+      background: var(--color-gray-50);
+      border: 1.5px solid var(--color-gray-200);
+      border-radius: 12px;
+      font-size: var(--font-size-base);
+      color: var(--color-gray-800);
+      transition: all var(--transition-fast);
+      -webkit-appearance: none;
+    }
+    
+    .input-field:focus {
+      background: var(--color-white);
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+    }
+    
+    .dark-theme .input-field {
+      background: #1E293B;
+      border-color: #334155;
+      color: #F8FAFC;
+    }
+    
+    .dark-theme .input-field:focus {
+      background: #0F172A;
+      border-color: #3B82F6;
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+    }
+    
+    .input-field::placeholder {
+      color: var(--color-gray-400);
+    }
+    
+    .input-field.form-input-error {
+      border-color: var(--color-danger) !important;
+    }
+    
+    .input-field.form-input-error:focus {
+      box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1) !important;
+    }
   </style>
 
   <!-- Theme Script (Loads before rendering to avoid flash) -->
@@ -157,7 +216,10 @@
         </div>
 
         <div class="form-group mb-6">
-          <label class="form-label">Mật khẩu</label>
+          <label class="form-label" style="display: flex; justify-content: space-between;">
+            <span>Mật khẩu</span>
+            <span class="auth-switch-link" onclick="toggleForm('forgot')" style="font-size: var(--font-size-xs); font-weight: normal; margin-left: 0;">Quên mật khẩu?</span>
+          </label>
           <div class="input-group">
             <div class="input-icon">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
@@ -226,6 +288,54 @@
 
         <div class="auth-switch-text">
           Đã có tài khoản?<span class="auth-switch-link" onclick="toggleForm('login')">Đăng nhập</span>
+        </div>
+      </div>
+
+      <!-- Quên mật khẩu Form -->
+      <div id="forgotForm" style="display: none;">
+        <div class="auth-header">
+          <div class="auth-logo">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 17v1c0 .5-.5 1-1 1H3c-.6 0-1-.5-1-1v-1"/><path d="M7 14V9a5 5 0 0 1 10 0v5"/><path d="M12 17v4"/><path d="M8 21h8"/></svg>
+          </div>
+          <h1 class="auth-title">Quên mật khẩu</h1>
+          <p class="auth-subtitle" id="forgotSubtitle">Nhập tên đăng nhập để tiếp tục</p>
+        </div>
+
+        <div class="error-alert" id="forgotError"></div>
+        <div class="success-alert" id="forgotSuccess" style="display: none; background-color: var(--color-success-light); color: var(--color-success-dark); padding: var(--space-3) var(--space-4); border-radius: var(--radius-md); font-size: var(--font-size-sm); font-weight: var(--font-weight-medium); margin-bottom: var(--space-4);"></div>
+
+        <div id="forgotStep1">
+          <div class="form-group mb-6">
+            <label class="form-label">Tên đăng nhập</label>
+            <div class="input-group">
+              <div class="input-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              </div>
+              <input type="text" class="input-field" id="forgotUsername" placeholder="Nhập tên đăng nhập">
+            </div>
+          </div>
+          <button class="btn btn-primary w-full" style="padding: var(--space-4);" onclick="verifyForgotUsername()">
+            Tiếp tục
+          </button>
+        </div>
+        
+        <div id="forgotStep2" style="display: none;">
+          <div class="form-group mb-6">
+            <label class="form-label">Mật khẩu mới</label>
+            <div class="input-group">
+              <div class="input-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              </div>
+              <input type="password" class="input-field" id="forgotNewPassword" placeholder="Nhập mật khẩu mới">
+            </div>
+          </div>
+          <button class="btn btn-primary w-full" style="padding: var(--space-4);" onclick="resetPassword()">
+            Đặt lại mật khẩu
+          </button>
+        </div>
+
+        <div class="auth-switch-text">
+          Nhớ mật khẩu? <span class="auth-switch-link" onclick="toggleForm('login')">Đăng nhập</span>
         </div>
       </div>
 
