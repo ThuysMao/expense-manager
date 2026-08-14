@@ -21,7 +21,7 @@
 
 .wallet-slider {
   display: flex;
-  gap: 16px;
+  gap: 20px;
   will-change: transform;
 }
 
@@ -34,7 +34,7 @@
   color: var(--color-white);
   position: relative;
   overflow: hidden;
-  box-shadow: var(--shadow-wallet);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15);
   min-height: 180px;
   display: flex;
   flex-direction: column;

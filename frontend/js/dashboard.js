@@ -321,7 +321,7 @@ const Dashboard = {
       let currentTranslate = 0;
       let prevTranslate = 0;
       let currentIndex = this.currentWalletIndex;
-      const gap = 16; // Match CSS gap
+      const gap = 20; // Match CSS gap
       
       // Helper to calculate translation
       const getTranslateByIndex = (index) => {
@@ -340,6 +340,18 @@ const Dashboard = {
         dots.forEach((d, i) => {
           if (i === currentIndex) d.classList.add('active');
           else d.classList.remove('active');
+        });
+
+        // Add visual distinction for inactive cards
+        Array.from(slider.children).forEach((card, i) => {
+          card.style.transition = 'transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.3s ease';
+          if (i === currentIndex) {
+            card.style.transform = 'scale(1)';
+            card.style.opacity = '1';
+          } else {
+            card.style.transform = 'scale(0.9)';
+            card.style.opacity = '0.5';
+          }
         });
       };
       
