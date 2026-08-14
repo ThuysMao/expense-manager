@@ -323,10 +323,17 @@ const Dashboard = {
       let currentIndex = this.currentWalletIndex;
       const gap = 16; // Match CSS gap
       
+      // Helper to calculate translation
+      const getTranslateByIndex = (index) => {
+        const slideWidth = slider.children[0].offsetWidth;
+        const containerWidth = walletWrapper.offsetWidth;
+        const centerOffset = (containerWidth - slideWidth) / 2;
+        return centerOffset + index * -(slideWidth + gap);
+      };
+
       // Helper to update position
       const setPositionByIndex = () => {
-        const slideWidth = walletWrapper.offsetWidth;
-        currentTranslate = currentIndex * -(slideWidth + gap);
+        currentTranslate = getTranslateByIndex(currentIndex);
         prevTranslate = currentTranslate;
         slider.style.transform = `translateX(${currentTranslate}px)`;
         
@@ -365,7 +372,7 @@ const Dashboard = {
         isDragging = false;
         
         const movedBy = currentTranslate - prevTranslate;
-        const slideWidth = walletWrapper.offsetWidth;
+        const slideWidth = slider.children[0].offsetWidth;
         const threshold = slideWidth / 4; // 25% swipe threshold
         
         if (movedBy < -threshold && currentIndex < slider.children.length - 1) currentIndex += 1;

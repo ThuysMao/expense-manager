@@ -4,7 +4,7 @@
 
 /* ==================== Wallet Card ==================== */
 .wallet-card-wrapper {
-  padding: calc(var(--space-3) + env(safe-area-inset-top, 16px)) var(--content-padding) var(--space-5);
+  padding: calc(var(--space-3) + env(safe-area-inset-top, 16px)) 0 var(--space-5);
   background: var(--color-white);
 }
 
@@ -26,8 +26,8 @@
 }
 
 .wallet-card {
-  flex: 0 0 100%;
-  width: 100%;
+  flex: 0 0 85%;
+  width: 85%;
   background: var(--gradient-wallet);
   border-radius: 20px;
   padding: var(--space-5) var(--space-6);
