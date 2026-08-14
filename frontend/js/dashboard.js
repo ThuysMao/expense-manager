@@ -29,17 +29,17 @@ const Dashboard = {
     const prevDate = new Date();
     prevDate.setMonth(prevDate.getMonth() - 1);
     const prevMonth = Utils.getMonthStr(prevDate);
-    const wallet = wallets[this.currentWalletIndex] || wallets[0];
-
-    let currentSummary = { income: 0, expense: 0 };
-    let prevSummary = { income: 0, expense: 0 };
-    if (wallet) {
-      currentSummary = await Store.getMonthSummary(currentMonth, wallet.id);
-      prevSummary = await Store.getMonthSummary(prevMonth, wallet.id);
-    }
+    // Fetch for all wallets so we can render them all in the carousel
+    const walletSummaries = await Promise.all(wallets.map(async w => {
+      return {
+        id: w.id,
+        current: await Store.getMonthSummary(currentMonth, w.id),
+        prev: await Store.getMonthSummary(prevMonth, w.id)
+      };
+    }));
 
     container.innerHTML = `
-      ${this.renderWalletCard(wallets, currentSummary, prevSummary)}
+      ${this.renderWalletCard(wallets, walletSummaries)}
       ${this.renderQuickActions()}
       ${this.renderTodaySummary(todaySummary)}
       ${this.renderGoalsPreview(goals)}
@@ -52,28 +52,28 @@ const Dashboard = {
 
 
 
-  renderWalletCard(wallets, currentSummary, prevSummary) {
+  renderWalletCard(wallets, walletSummaries) {
     if (!wallets.length) return '';
-    const wallet = wallets[this.currentWalletIndex] || wallets[0];
-    const displayAmount = this.walletBalanceVisible ? Utils.formatCurrency(wallet.balance) : '••••••••';
-
-    const change = Utils.percentageChange(currentSummary.income || 1, prevSummary.income || 1);
-    const isPositive = change >= 0;
 
     // Wallet dots
     const dots = wallets.map((w, i) => `
       <button class="wallet-dot ${i === this.currentWalletIndex ? 'active' : ''}" data-index="${i}" aria-label="${w.name}"></button>
     `).join('');
 
-    return `
-      <div class="wallet-card-wrapper">
-        <div class="wallet-card wallet-shine animate-card-reveal" id="walletCard">
+    const cards = wallets.map((wallet, i) => {
+      const summary = walletSummaries.find(s => s.id === wallet.id) || { current: { income: 0 }, prev: { income: 0 } };
+      const displayAmount = this.walletBalanceVisible ? Utils.formatCurrency(wallet.balance) : '••••••••';
+      const change = Utils.percentageChange(summary.current.income || 1, summary.prev.income || 1);
+      const isPositive = change >= 0;
+
+      return `
+        <div class="wallet-card wallet-shine animate-card-reveal">
           <div class="wallet-card-top">
             <div class="wallet-card-name">
               <span class="wallet-card-name-icon">${wallet.icon}</span>
               ${wallet.name}
             </div>
-            <button class="wallet-card-eye" id="toggleWalletBalance" aria-label="Toggle wallet balance">
+            <button class="wallet-card-eye toggleWalletBalance" aria-label="Toggle wallet balance">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 ${this.walletBalanceVisible
                   ? '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>'
@@ -82,7 +82,7 @@ const Dashboard = {
               </svg>
             </button>
           </div>
-          <div class="wallet-card-amount" id="walletBalance">${displayAmount}</div>
+          <div class="wallet-card-amount">${displayAmount}</div>
           <div class="wallet-card-bottom">
             <span class="wallet-card-change ${isPositive ? '' : 'negative'}">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -91,6 +91,16 @@ const Dashboard = {
               ${isPositive ? '+' : ''}${change}%
             </span>
             <span class="wallet-card-change-label">so với tháng trước</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    return `
+      <div class="wallet-card-wrapper">
+        <div class="wallet-slider-container">
+          <div class="wallet-slider" id="walletSlider" style="transform: translateX(-${this.currentWalletIndex * 100}%);">
+            ${cards}
           </div>
         </div>
         ${wallets.length > 1 ? `<div class="wallet-dots" id="walletDots">${dots}</div>` : ''}
@@ -293,58 +303,111 @@ const Dashboard = {
   bindEvents(container) {
 
     // Toggle wallet balance visibility
-    const toggleWalletBtn = Utils.$('#toggleWalletBalance', container);
-    if (toggleWalletBtn) {
-      toggleWalletBtn.addEventListener('click', () => {
+    const toggleWalletBtns = Utils.$$('.toggleWalletBalance', container);
+    toggleWalletBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
         this.walletBalanceVisible = !this.walletBalanceVisible;
         this.render();
       });
-    }
-
-
+    });
 
     // Wallet dots
     const dots = Utils.$$('.wallet-dot', container);
     dots.forEach(dot => {
       dot.addEventListener('click', async () => {
         const index = parseInt(dot.dataset.index);
+        if (index === this.currentWalletIndex) return;
+        
         this.currentWalletIndex = index;
+        const slider = Utils.$('#walletSlider');
+        if (slider) {
+           slider.style.transition = 'transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)';
+           slider.style.transform = `translateX(-${this.currentWalletIndex * 100}%)`;
+        }
+        
+        dots.forEach((d, i) => {
+          if (i === this.currentWalletIndex) d.classList.add('active');
+          else d.classList.remove('active');
+        });
+        
         const wallets = await Store.getWallets();
         if (wallets[index]) {
           await Store.setActiveWalletId(wallets[index].id);
         }
-        this.render();
+        
+        setTimeout(() => {
+           this.render();
+        }, 300);
       });
     });
 
     // Swipe to change wallet
-    const walletWrapper = Utils.$('.wallet-card-wrapper', container);
+    const walletWrapper = Utils.$('.wallet-slider-container', container);
     if (walletWrapper) {
       let touchStartX = 0;
-      let touchEndX = 0;
-      
+      let currentX = 0;
+      let isDragging = false;
+      const slider = Utils.$('#walletSlider', container);
+
       walletWrapper.addEventListener('touchstart', e => {
         touchStartX = e.changedTouches[0].screenX;
+        isDragging = true;
+        if (slider) {
+          slider.style.transition = 'none';
+        }
+      }, {passive: true});
+
+      walletWrapper.addEventListener('touchmove', e => {
+        if (!isDragging || !slider) return;
+        currentX = e.changedTouches[0].screenX;
+        const diff = currentX - touchStartX;
+        let translateX = -(this.currentWalletIndex * 100);
+        let pxOffset = diff;
+        slider.style.transform = `translateX(calc(${translateX}% + ${pxOffset}px))`;
       }, {passive: true});
 
       walletWrapper.addEventListener('touchend', async e => {
-        touchEndX = e.changedTouches[0].screenX;
-        const diff = touchStartX - touchEndX;
+        if (!isDragging) return;
+        isDragging = false;
         
-        // Threshold for swipe: 50px
-        if (Math.abs(diff) > 50) {
-          const wallets = await Store.getWallets();
-          if (wallets.length <= 1) return;
-          
+        const diff = touchStartX - e.changedTouches[0].screenX;
+        const wallets = await Store.getWallets();
+        
+        if (slider) {
+          slider.style.transition = 'transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)';
+        }
+
+        if (wallets.length > 1 && Math.abs(diff) > 50) {
+          let newIndex = this.currentWalletIndex;
           if (diff > 0) {
-            // Swiped left -> next wallet
-            this.currentWalletIndex = (this.currentWalletIndex + 1) % wallets.length;
+            newIndex = (this.currentWalletIndex + 1) % wallets.length;
           } else {
-            // Swiped right -> prev wallet
-            this.currentWalletIndex = (this.currentWalletIndex - 1 + wallets.length) % wallets.length;
+            newIndex = (this.currentWalletIndex - 1 + wallets.length) % wallets.length;
           }
-          await Store.setActiveWalletId(wallets[this.currentWalletIndex].id);
-          this.render();
+          
+          if (newIndex !== this.currentWalletIndex) {
+            this.currentWalletIndex = newIndex;
+            
+            if (slider) {
+              slider.style.transform = `translateX(-${this.currentWalletIndex * 100}%)`;
+            }
+            
+            dots.forEach((dot, i) => {
+              if (i === this.currentWalletIndex) dot.classList.add('active');
+              else dot.classList.remove('active');
+            });
+
+            await Store.setActiveWalletId(wallets[this.currentWalletIndex].id);
+            setTimeout(() => {
+              this.render();
+            }, 300);
+            return;
+          }
+        }
+        
+        // Snap back if no change
+        if (slider) {
+          slider.style.transform = `translateX(-${this.currentWalletIndex * 100}%)`;
         }
       }, {passive: true});
     }
@@ -418,15 +481,15 @@ const Dashboard = {
   },
 
   animateEntrance() {
-    // Animate wallet card
-    const card = Utils.$('#walletCard');
-    if (card) {
-      card.style.opacity = '0';
-      card.style.transform = 'translateY(20px) scale(0.98)';
+    // Animate wallet card wrapper
+    const wrapper = Utils.$('.wallet-card-wrapper');
+    if (wrapper) {
+      wrapper.style.opacity = '0';
+      wrapper.style.transform = 'translateY(20px)';
       requestAnimationFrame(() => {
-        card.style.transition = 'all 0.5s cubic-bezier(0.16, 1, 0.3, 1)';
-        card.style.opacity = '1';
-        card.style.transform = 'translateY(0) scale(1)';
+        wrapper.style.transition = 'all 0.5s cubic-bezier(0.16, 1, 0.3, 1)';
+        wrapper.style.opacity = '1';
+        wrapper.style.transform = 'translateY(0)';
       });
     }
   }
