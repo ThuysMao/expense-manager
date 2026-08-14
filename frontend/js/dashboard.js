@@ -99,7 +99,7 @@ const Dashboard = {
     return `
       <div class="wallet-card-wrapper">
         <div class="wallet-slider-container">
-          <div class="wallet-slider" id="walletSlider" style="transform: translateX(-${this.currentWalletIndex * 100}%);">
+          <div class="wallet-slider" id="walletSlider">
             ${cards}
           </div>
         </div>
@@ -311,105 +311,103 @@ const Dashboard = {
       });
     });
 
-    // Wallet dots
+    const walletWrapper = Utils.$('.wallet-slider-container', container);
+    const slider = Utils.$('#walletSlider', container);
     const dots = Utils.$$('.wallet-dot', container);
-    dots.forEach(dot => {
-      dot.addEventListener('click', async () => {
-        const index = parseInt(dot.dataset.index);
-        if (index === this.currentWalletIndex) return;
-        
-        this.currentWalletIndex = index;
-        const slider = Utils.$('#walletSlider');
-        if (slider) {
-           slider.style.transition = 'transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)';
-           slider.style.transform = `translateX(-${this.currentWalletIndex * 100}%)`;
-        }
+
+    if (walletWrapper && slider && slider.children.length > 0) {
+      let isDragging = false;
+      let startPos = 0;
+      let currentTranslate = 0;
+      let prevTranslate = 0;
+      let currentIndex = this.currentWalletIndex;
+      const gap = 16; // Match CSS gap
+      
+      // Helper to update position
+      const setPositionByIndex = () => {
+        const slideWidth = walletWrapper.offsetWidth;
+        currentTranslate = currentIndex * -(slideWidth + gap);
+        prevTranslate = currentTranslate;
+        slider.style.transform = `translateX(${currentTranslate}px)`;
         
         dots.forEach((d, i) => {
-          if (i === this.currentWalletIndex) d.classList.add('active');
+          if (i === currentIndex) d.classList.add('active');
           else d.classList.remove('active');
         });
-        
-        const wallets = await Store.getWallets();
-        if (wallets[index]) {
-          await Store.setActiveWalletId(wallets[index].id);
-        }
-        
-        setTimeout(() => {
-           this.render();
-        }, 300);
-      });
-    });
+      };
+      
+      // Wait a tick for layout
+      setTimeout(() => {
+        slider.style.transition = 'none';
+        setPositionByIndex();
+      }, 0);
 
-    // Swipe to change wallet
-    const walletWrapper = Utils.$('.wallet-slider-container', container);
-    if (walletWrapper) {
-      let touchStartX = 0;
-      let currentX = 0;
-      let isDragging = false;
-      const slider = Utils.$('#walletSlider', container);
+      const getPositionX = (event) => {
+        return event.type.includes('mouse') ? event.pageX : event.touches[0].clientX;
+      };
 
-      walletWrapper.addEventListener('touchstart', e => {
-        touchStartX = e.changedTouches[0].screenX;
+      const touchStart = (event) => {
         isDragging = true;
-        if (slider) {
-          slider.style.transition = 'none';
-        }
-      }, {passive: true});
+        startPos = getPositionX(event);
+        slider.style.transition = 'none';
+      };
 
-      walletWrapper.addEventListener('touchmove', e => {
-        if (!isDragging || !slider) return;
-        currentX = e.changedTouches[0].screenX;
-        const diff = currentX - touchStartX;
-        let translateX = -(this.currentWalletIndex * 100);
-        let pxOffset = diff;
-        slider.style.transform = `translateX(calc(${translateX}% + ${pxOffset}px))`;
-      }, {passive: true});
+      const touchMove = (event) => {
+        if (!isDragging) return;
+        const currentPosition = getPositionX(event);
+        const diff = currentPosition - startPos;
+        currentTranslate = prevTranslate + diff;
+        slider.style.transform = `translateX(${currentTranslate}px)`;
+      };
 
-      walletWrapper.addEventListener('touchend', async e => {
+      const touchEnd = async () => {
         if (!isDragging) return;
         isDragging = false;
         
-        const diff = touchStartX - e.changedTouches[0].screenX;
-        const wallets = await Store.getWallets();
+        const movedBy = currentTranslate - prevTranslate;
+        const slideWidth = walletWrapper.offsetWidth;
+        const threshold = slideWidth / 4; // 25% swipe threshold
         
-        if (slider) {
-          slider.style.transition = 'transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)';
-        }
-
-        if (wallets.length > 1 && Math.abs(diff) > 50) {
-          let newIndex = this.currentWalletIndex;
-          if (diff > 0) {
-            newIndex = (this.currentWalletIndex + 1) % wallets.length;
-          } else {
-            newIndex = (this.currentWalletIndex - 1 + wallets.length) % wallets.length;
-          }
-          
-          if (newIndex !== this.currentWalletIndex) {
-            this.currentWalletIndex = newIndex;
-            
-            if (slider) {
-              slider.style.transform = `translateX(-${this.currentWalletIndex * 100}%)`;
-            }
-            
-            dots.forEach((dot, i) => {
-              if (i === this.currentWalletIndex) dot.classList.add('active');
-              else dot.classList.remove('active');
-            });
-
+        if (movedBy < -threshold && currentIndex < slider.children.length - 1) currentIndex += 1;
+        if (movedBy > threshold && currentIndex > 0) currentIndex -= 1;
+        
+        slider.style.transition = 'transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)';
+        setPositionByIndex();
+        
+        if (currentIndex !== this.currentWalletIndex) {
+          this.currentWalletIndex = currentIndex;
+          // Update active wallet silently
+          const wallets = await Store.getWallets();
+          if (wallets[this.currentWalletIndex]) {
             await Store.setActiveWalletId(wallets[this.currentWalletIndex].id);
-            setTimeout(() => {
-              this.render();
-            }, 300);
-            return;
           }
         }
-        
-        // Snap back if no change
-        if (slider) {
-          slider.style.transform = `translateX(-${this.currentWalletIndex * 100}%)`;
-        }
-      }, {passive: true});
+      };
+
+      // Mouse Events
+      walletWrapper.addEventListener('mousedown', touchStart);
+      walletWrapper.addEventListener('mousemove', touchMove);
+      walletWrapper.addEventListener('mouseup', touchEnd);
+      walletWrapper.addEventListener('mouseleave', () => { if (isDragging) touchEnd(); });
+      
+      // Touch Events
+      walletWrapper.addEventListener('touchstart', touchStart, { passive: true });
+      walletWrapper.addEventListener('touchmove', touchMove, { passive: true });
+      walletWrapper.addEventListener('touchend', touchEnd);
+      
+      // Dot clicks
+      dots.forEach((dot, index) => {
+        dot.addEventListener('click', () => {
+          if (index === currentIndex) return;
+          currentIndex = index;
+          slider.style.transition = 'transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)';
+          setPositionByIndex();
+          this.currentWalletIndex = currentIndex;
+          Store.getWallets().then(wallets => {
+            if (wallets[currentIndex]) Store.setActiveWalletId(wallets[currentIndex].id);
+          });
+        });
+      });
     }
 
     // Quick actions

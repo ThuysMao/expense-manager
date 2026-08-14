@@ -11,13 +11,17 @@
 .wallet-slider-container {
   overflow: hidden;
   width: 100%;
-  touch-action: pan-y; /* Allow vertical scrolling, prevent horizontal */
+  touch-action: pan-y; /* Allow vertical scroll, but capture horizontal for JS drag */
+  cursor: grab;
+}
+
+.wallet-slider-container:active {
+  cursor: grabbing;
 }
 
 .wallet-slider {
   display: flex;
-  width: 100%;
-  transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  gap: 16px;
   will-change: transform;
 }
 
